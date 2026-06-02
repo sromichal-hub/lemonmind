@@ -23,3 +23,13 @@ export const authAPI = {
   me: () => apiClient.get('/auth/me'),
 };
 
+export const categoriesAPI = {
+  getAll: () => apiClient.get('/categories'),
+  create: (name: string, parentId?: number) =>
+    apiClient.post('/categories', { name, parentId }),
+  update: (id: number, name: string, parentId?: number) =>
+    apiClient.put(`/categories/${id}`, { name, parentId }),
+  delete: (id: number) => apiClient.delete(`/categories/${id}`),
+};
+
+

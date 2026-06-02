@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store';
 import { authAPI } from '../api';
+import CategoriesPage from './CategoriesPage';
+
+type Tab = 'dashboard' | 'categories' | 'products';
 
 export default function DashboardPage() {
   const { user, clearAuth } = useAuthStore();
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('dashboard');
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -46,39 +50,93 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Welcome, {user?.name}! 👋
-          </h2>
-          <p className="text-gray-600 mb-6">
-            You are logged in as <strong>{user?.email}</strong>
-          </p>
+      <div className="container mx-auto px-4 py-8">
+        {/* Tabs */}
+        <div className="flex gap-4 mb-6 bg-white rounded-lg shadow p-2">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`px-6 py-2 rounded transition ${
+              activeTab === 'dashboard'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setActiveTab('categories')}
+            className={`px-6 py-2 rounded transition ${
+              activeTab === 'categories'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Categories
+          </button>
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`px-6 py-2 rounded transition ${
+              activeTab === 'products'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Products
+          </button>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                📂 Categories
-              </h3>
-              <p className="text-blue-700">Manage your product categories</p>
-            </div>
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Welcome, {user?.name}! 👋
+            </h2>
+            <p className="text-gray-600 mb-6">
+              You are logged in as <strong>{user?.email}</strong>
+            </p>
 
-            <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-green-900 mb-2">
-                📦 Products
-              </h3>
-              <p className="text-green-700">Add and manage your products</p>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer hover:shadow-lg transition" onClick={() => setActiveTab('categories')}>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                  📂 Categories
+                </h3>
+                <p className="text-blue-700">Manage your product categories</p>
+              </div>
 
-            <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-purple-900 mb-2">
-                ⚙️ GPSR Data
-              </h3>
-              <p className="text-purple-700">Manage GPSR compliance information</p>
+              <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-green-900 mb-2">
+                  📦 Products
+                </h3>
+                <p className="text-green-700">Add and manage your products</p>
+              </div>
+
+              <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-purple-900 mb-2">
+                  ⚙️ GPSR Data
+                </h3>
+                <p className="text-purple-700">Manage GPSR compliance information</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Categories Tab */}
+        {activeTab === 'categories' && (
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <CategoriesPage />
+          </div>
+        )}
+
+        {/* Products Tab */}
+        {activeTab === 'products' && (
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900">
+              📦 Products (Coming Soon)
+            </h2>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
