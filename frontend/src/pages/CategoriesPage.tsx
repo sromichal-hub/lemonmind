@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { categoriesAPI } from '../api';
 import { CategoriesList, useCategoriesQuery, Category } from '../components/CategoriesList';
 import { CategoryForm } from '../components/CategoryForm';
+import CategoryProductsView from '../components/CategoryProductsView';
 
 export default function CategoriesPage() {
   const { categories, loading, error, refetch } = useCategoriesQuery();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [viewingProductsCategory, setViewingProductsCategory] = useState<Category | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
@@ -36,6 +38,15 @@ export default function CategoriesPage() {
     setEditingCategory(category);
     setShowForm(true);
   };
+
+  if (viewingProductsCategory) {
+    return (
+      <CategoryProductsView
+        category={viewingProductsCategory}
+        onBack={() => setViewingProductsCategory(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -84,6 +95,7 @@ export default function CategoriesPage() {
           categories={categories}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onViewProducts={setViewingProductsCategory}
         />
       )}
 

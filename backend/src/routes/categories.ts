@@ -75,6 +75,62 @@ router.post('/', async (req: AuthRequest, res) => {
   }
 });
 
+router.get('/:id/products', async (req: AuthRequest, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    const categoryId = parseInt(req.params.id);
+
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!category || category.userId !== req.user.id) {
+      return res.status(403).json({ error: 'Category not found or not yours' });
+    }
+
+    const allCategories = await prisma.category.findMany({
+      where: { userId: req.user.id },
+      select: { id: true, parentId: true },
+    });
+
+    const collectDescendantIds = (parentId: number): number[] => {
+      const children = allCategories.filter((cat) => cat.parentId === parentId);
+      return children.flatMap((child) => [
+        child.id,
+        ...collectDescendantIds(child.id),
+      ]);
+    };
+
+    const descendantIds = collectDescendantIds(categoryId);
+    const categoryIds = [categoryId, ...descendantIds];
+
+    const products = await prisma.product.findMany({
+      where: {
+        userId: req.user.id,
+        categoryId: { in: categoryIds },
+      },
+      include: { category: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const productsWithMeta = products.map((product) => ({
+      ...product,
+      isFromChildCategory: product.categoryId !== categoryId,
+    }));
+
+    res.json({
+      category: { id: category.id, name: category.name },
+      products: productsWithMeta,
+    });
+  } catch (error) {
+    console.error('Get category products error:', error);
+    res.status(500).json({ error: 'Failed to fetch category products' });
+  }
+});
+
 router.put('/:id', async (req: AuthRequest, res) => {
   try {
     if (!req.user) {

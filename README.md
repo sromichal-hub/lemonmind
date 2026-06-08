@@ -152,12 +152,12 @@ SELECT * FROM "Product";
 - [x] Delete with cascade
 - [x] Visual tree UI with expand/collapse
 
-### 🔄 Phase 3: Products (Coming Soon)
-- [ ] Create products
-- [ ] Link products to categories
-- [ ] GPSR fields form
-- [ ] File uploads (pictograms, manuals, certificates)
-- [ ] Product listing and filtering
+### ✅ Phase 3: Products (Coming Soon)
+- [x] Create products
+- [x] Link products to categories
+- [x] GPSR fields form
+- [x] File uploads (pictograms, manuals, certificates)
+- [x] Product listing and filtering
 
 ## 🛠️ Development
 

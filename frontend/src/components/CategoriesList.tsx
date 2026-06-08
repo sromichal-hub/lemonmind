@@ -16,10 +16,11 @@ interface TreeNodeProps {
   category: Category;
   onEdit: (category: Category) => void;
   onDelete: (id: number) => void;
+  onViewProducts: (category: Category) => void;
   level: number;
 }
 
-function TreeNode({ category, onEdit, onDelete, level }: TreeNodeProps) {
+function TreeNode({ category, onEdit, onDelete, onViewProducts, level }: TreeNodeProps) {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -39,6 +40,12 @@ function TreeNode({ category, onEdit, onDelete, level }: TreeNodeProps) {
         
         <span className="flex-1 text-gray-800">{category.name}</span>
         
+        <button
+          onClick={() => onViewProducts(category)}
+          className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          Produkty
+        </button>
         <button
           onClick={() => onEdit(category)}
           className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -61,6 +68,7 @@ function TreeNode({ category, onEdit, onDelete, level }: TreeNodeProps) {
               category={child}
               onEdit={onEdit}
               onDelete={onDelete}
+              onViewProducts={onViewProducts}
               level={level + 1}
             />
           ))}
@@ -74,12 +82,14 @@ interface CategoriesListProps {
   categories: Category[];
   onEdit: (category: Category) => void;
   onDelete: (id: number) => void;
+  onViewProducts: (category: Category) => void;
 }
 
 function CategoriesList({
   categories,
   onEdit,
   onDelete,
+  onViewProducts,
 }: CategoriesListProps) {
   return (
     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -93,6 +103,7 @@ function CategoriesList({
               category={category}
               onEdit={onEdit}
               onDelete={onDelete}
+              onViewProducts={onViewProducts}
               level={0}
             />
           ))}

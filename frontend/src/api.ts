@@ -25,12 +25,24 @@ export const authAPI = {
 
 export const categoriesAPI = {
   getAll: () => apiClient.get('/categories'),
+  getProducts: (id: number) => apiClient.get(`/categories/${id}/products`),
   create: (name: string, parentId?: number) =>
     apiClient.post('/categories', { name, parentId }),
   update: (id: number, name: string, parentId?: number) =>
     apiClient.put(`/categories/${id}`, { name, parentId }),
   delete: (id: number) => apiClient.delete(`/categories/${id}`),
 };
+
+export interface CategoryProduct {
+  id: number;
+  name: string;
+  categoryId?: number | null;
+  category?: { id: number; name: string };
+  gpsrIdentificationDetails?: string;
+  gpsrModerationStatus?: string;
+  isFromChildCategory: boolean;
+  createdAt: string;
+}
 
 export interface ProductData {
   name: string;
