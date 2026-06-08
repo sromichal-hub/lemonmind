@@ -37,13 +37,17 @@ This will start:
 │   │   ├── types.ts              # TypeScript types
 │   │   ├── middleware/
 │   │   │   └── auth.ts           # JWT authentication middleware
+│   │   ├── app.ts                # Express app (used by tests)
 │   │   └── routes/
 │   │       ├── auth.ts           # Authentication endpoints
-│   │       └── categories.ts     # Category management endpoints
+│   │       ├── categories.ts     # Category management endpoints
+│   │       └── products.ts       # Product management endpoints
+│   ├── tests/                    # Backend unit tests (Vitest + Supertest)
 │   ├── prisma/
 │   │   └── schema.prisma         # Database schema
 │   ├── Dockerfile
 │   ├── package.json
+│   ├── vitest.config.ts
 │   └── tsconfig.json
 │
 ├── frontend/
@@ -53,14 +57,19 @@ This will start:
 │   │   ├── api.ts                # API client with Axios
 │   │   ├── store.ts              # Zustand auth store
 │   │   ├── schemas.ts            # Zod validation schemas
+│   │   ├── test/setup.ts         # Test setup (jest-dom)
 │   │   ├── pages/
 │   │   │   ├── LoginPage.tsx
 │   │   │   ├── RegisterPage.tsx
 │   │   │   ├── DashboardPage.tsx (with tabs)
-│   │   │   └── CategoriesPage.tsx
+│   │   │   ├── CategoriesPage.tsx
+│   │   │   └── ProductsPage.tsx
 │   │   └── components/
 │   │       ├── CategoriesList.tsx
-│   │       └── CategoryForm.tsx
+│   │       ├── CategoryForm.tsx
+│   │       ├── CategoryProductsView.tsx
+│   │       ├── ProductForm.tsx
+│   │       └── ProductsList.tsx
 │   ├── public/
 │   ├── Dockerfile
 │   ├── package.json
@@ -100,10 +109,17 @@ GET    /api/auth/me         # Get current user (requires auth)
 ### Endpoints
 ```
 GET    /api/categories              # Get all categories for user
+GET    /api/categories/:id/products # Get products from category and subcategories
 POST   /api/categories              # Create new category
 PUT    /api/categories/:id          # Update category
 DELETE /api/categories/:id          # Delete category (with children)
 ```
+
+### Category Products View
+- Button **Produkty** on each category in the tree view
+- Displays products from the selected category and all child categories
+- Products from subcategories are marked with a **Podkategoria** badge
+- Products directly in the selected category show a **Ta kategoria** badge
 
 ## 🔗 Database Connection
 
@@ -152,12 +168,52 @@ SELECT * FROM "Product";
 - [x] Delete with cascade
 - [x] Visual tree UI with expand/collapse
 
-### ✅ Phase 3: Products (Coming Soon)
+### ✅ Phase 3: Products
 - [x] Create products
 - [x] Link products to categories
 - [x] GPSR fields form
 - [x] File uploads (pictograms, manuals, certificates)
 - [x] Product listing and filtering
+- [x] Category products view (with subcategory indicators)
+
+## 🧪 Testing
+
+The project uses **Vitest** for unit tests on both backend and frontend.
+
+### Backend Tests
+Located in `backend/tests/`. Uses **Supertest** for HTTP endpoint testing with mocked Prisma client.
+
+```bash
+cd backend
+npm install
+npm test              # Run all tests once
+npm run test:watch    # Watch mode
+```
+
+**Covered scenarios:**
+- JWT authentication middleware (missing/invalid/valid token)
+- `GET /api/categories/:id/products` — auth, permissions, descendant products, `isFromChildCategory` flag
+
+### Frontend Tests
+Located alongside components in `frontend/src/`. Uses **React Testing Library** + **jsdom**.
+
+```bash
+cd frontend
+npm install
+npm test              # Run all tests once
+npm run test:watch    # Watch mode
+```
+
+**Covered scenarios:**
+- `CategoryProductsView` — loading, products table, source badges, empty/error states, back navigation
+- `CategoriesList` — tree rendering, **Produkty** button, callback
+- `CategoriesPage` — navigation to/from products view
+- `schemas.ts` — login and register validation
+
+### Run All Tests
+```bash
+cd backend && npm test && cd ../frontend && npm test
+```
 
 ## 🛠️ Development
 
@@ -207,6 +263,7 @@ VITE_API_URL=http://localhost:3000
 - bcryptjs - Password hashing
 - cors - Cross-origin requests
 - dotenv - Environment variables
+- vitest, supertest - Unit testing (dev)
 
 ### Frontend
 - react - UI library
@@ -216,6 +273,7 @@ VITE_API_URL=http://localhost:3000
 - axios - HTTP client
 - tailwindcss - Styling
 - @hookform/resolvers - Form validation resolver
+- vitest, @testing-library/react - Unit testing (dev)
 
 ## 🔒 Security
 
@@ -228,12 +286,11 @@ VITE_API_URL=http://localhost:3000
 
 ## 🚧 Next Steps
 
-1. Implement product management (CRUD)
-2. Add GPSR fields form with validation
-3. Implement file uploads for GPSR documents
-4. Add product filtering and search
-5. Add moderation workflow
-6. Implement role-based access control
+1. Add product filtering and search
+2. Add moderation workflow
+3. Implement role-based access control
+4. Add integration/e2e tests with test database
+5. Add CI pipeline for automated test runs
 
 ---
 
