@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories Category[]
+  products   Product[]
+}
+
+model Category {
+  id        Int     @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  parent    Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Category[] @relation("CategoryHierarchy")
+  products  Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model Product {
+  id        Int     @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId Int?
+  category  Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  
+  // GPSR Fields
+  gpsrIdentificationDetails String?
+  gpsrWarningPhrases String?
+  gpsrWarningText String?
+  gpsrPictograms String? // URL or file path
+  gpsrAdditionalSafetyInfo String?
+  gpsrStatementOfCompliance String?
+  gpsrOnlineInstructionsUrl String?
+  gpsrInstructionsManual String? // URL or file path
+  gpsrDeclarationsOfConformity String? // URL or file path
+  gpsrCertificates String? // URL or file path
+  gpsrModerationStatus String? @default("PENDING")
+  gpsrModerationComment String?
+  gpsrLastSubmissionDate DateTime?
+  gpsrLastModerationDate DateTime?
+  gpsrSubmittedBySupplierUser String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([categoryId])
+}
