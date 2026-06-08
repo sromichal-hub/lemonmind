@@ -110,13 +110,6 @@ export default function DashboardPage() {
                 </h3>
                 <p className="text-green-700">Add and manage your products</p>
               </div>
-
-              <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
-                <h3 className="text-lg font-semibold text-purple-900 mb-2">
-                  ⚙️ GPSR Data
-                </h3>
-                <p className="text-purple-700">Manage GPSR compliance information</p>
-              </div>
             </div>
           </div>
         )}
