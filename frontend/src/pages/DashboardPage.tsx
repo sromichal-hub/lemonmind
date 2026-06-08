@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store';
 import { authAPI } from '../api';
 import CategoriesPage from './CategoriesPage';
+import ProductsPage from './ProductsPage';
 
 type Tab = 'dashboard' | 'categories' | 'products';
 
@@ -103,7 +104,7 @@ export default function DashboardPage() {
                 <p className="text-blue-700">Manage your product categories</p>
               </div>
 
-              <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+              <div className="p-6 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:shadow-lg transition" onClick={() => setActiveTab('products')}>
                 <h3 className="text-lg font-semibold text-green-900 mb-2">
                   📦 Products
                 </h3>
@@ -130,9 +131,7 @@ export default function DashboardPage() {
         {/* Products Tab */}
         {activeTab === 'products' && (
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900">
-              📦 Products (Coming Soon)
-            </h2>
+            <ProductsPage />
           </div>
         )}
       </div>

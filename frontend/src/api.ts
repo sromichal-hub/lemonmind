@@ -32,4 +32,31 @@ export const categoriesAPI = {
   delete: (id: number) => apiClient.delete(`/categories/${id}`),
 };
 
+export interface ProductData {
+  name: string;
+  categoryId?: number | null;
+  gpsrIdentificationDetails?: string;
+  gpsrWarningPhrases?: string;
+  gpsrWarningText?: string;
+  gpsrPictograms?: string;
+  gpsrAdditionalSafetyInfo?: string;
+  gpsrStatementOfCompliance?: string;
+  gpsrOnlineInstructionsUrl?: string;
+  gpsrInstructionsManual?: string;
+  gpsrDeclarationsOfConformity?: string;
+  gpsrCertificates?: string;
+  gpsrModerationStatus?: string;
+  gpsrModerationComment?: string;
+  gpsrSubmittedBySupplierUser?: string;
+}
+
+export const productsAPI = {
+  getAll: () => apiClient.get('/products'),
+  getById: (id: number) => apiClient.get(`/products/${id}`),
+  create: (data: ProductData) =>
+    apiClient.post('/products', data),
+  update: (id: number, data: ProductData) =>
+    apiClient.put(`/products/${id}`, data),
+  delete: (id: number) => apiClient.delete(`/products/${id}`),
+};
 

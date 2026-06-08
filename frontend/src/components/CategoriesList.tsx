@@ -76,7 +76,7 @@ interface CategoriesListProps {
   onDelete: (id: number) => void;
 }
 
-export function CategoriesList({
+function CategoriesList({
   categories,
   onEdit,
   onDelete,
@@ -101,6 +101,9 @@ export function CategoriesList({
     </div>
   );
 }
+
+export default CategoriesList;
+export { CategoriesList };
 
 export function useCategoriesQuery() {
   const [categories, setCategories] = useState<Category[]>([]);
